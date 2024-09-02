@@ -10,6 +10,30 @@ from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 from spotipy.oauth2 import SpotifyOAuth
 
+
+#Retreived from personal Spotify Developer account
+CLIENT_ID = '3c8cd42f082e452784099a2e66c29051'
+CLIENT_SECRET = 'af6ed2d59cd649c495f9ee76479f1e3f'
+
+client_credentials = f"{CLIENT_ID}:{CLIENT_SECRET}"
+client_credentials_base64 = base64.b64encode(client_credentials.encode())
+
+token_url = 'https://accounts.spotify.com/api/token'
+headers = {
+    'Authorization': f'Basic {client_credentials_base64.decode()}'
+}
+data = {
+    'grant_type': 'client_credentials'
+}
+response = requests.post(token_url, data=data, headers=headers)
+
+if response.status_code == 200:
+    access_token = response.json()['access_token']
+    print("Access token obtained successfully.")
+else:
+    print("error obtaining access token.")
+    exit()
+
 def get_trending_playlist_data(playlist_id, access_token):
     #Spotipy uses access token
     sp = spotipy.Spotify(auth=access_token)
@@ -75,29 +99,6 @@ def get_trending_playlist_data(playlist_id, access_token):
     df = pd.DataFrame(music_data)
 
     return df
-
-#Retreived from personal Spotify Developer account
-CLIENT_ID =
-CLIENT_SECRET =
-
-client_credentials = f"{CLIENT_ID}:{CLIENT_SECRET}"
-client_credentials_base64 = base64.b64encode(client_credentials.encode())
-
-token_url = 'https://accounts.spotify.com/api/token'
-headers = {
-    'Authorization': f'Basic {client_credentials_base64.decode()}'
-}
-data = {
-    'grant_type': 'client_credentials'
-}
-response = requests.post(token_url, data=data, headers=headers)
-
-if response.status_code == 200:
-    access_token = response.json()['access_token']
-    print("Access token obtained successfully.")
-else:
-    print("error obtaining access token.")
-    exit()
 
 #Specific playlist's id from URL
 playlist_id = '1VnIZt1YcgjR1JJUqTPDS9'
