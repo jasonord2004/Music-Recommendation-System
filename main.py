@@ -120,6 +120,13 @@ def calculate_weighted_popularity(release_date):
     weight = 1 / (time_span.days + 1)
     return weight
 
+
+# normalize the music features using the Min-Max scaling
+scaler = MinMaxScaler()
+music_features = music_df [['Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness',
+                            'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo']].values
+music_features_scaled = scaler.fit_transform(music_features)
+
 # Function for content-based recommendations based on music features
 def content_based_recommendations(input_song_name, num_recommendations = 5):
     if input_song_name not in music_df['Track Name'].values:
@@ -166,3 +173,8 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     hybrid_recommendations = hybrid_recommendations[hybrid_recommendations['Track Name'] != input_song_name]
 
     return hybrid_recommendations
+
+input_song_name = "みちしるべ"
+recommendations = hybrid_recommendations(input_song_name, num_recommendations=5)
+print(f"Hybrid recommended songs for '{input_song_name}':")
+print(recommendations)
