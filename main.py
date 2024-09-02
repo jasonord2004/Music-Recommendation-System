@@ -2,7 +2,12 @@
 import requests
 import base64
 import pandas as pd
+import numpy as np
 import spotipy
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from datetime import datetime
+from sklearn.metrics.pairwise import cosine_similarity
 from spotipy.oauth2 import SpotifyOAuth
 
 def get_trending_playlist_data(playlist_id, access_token):
