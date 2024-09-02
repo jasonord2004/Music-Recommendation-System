@@ -108,6 +108,11 @@ music_df = get_trending_playlist_data(playlist_id, access_token)
 #prints dataframe with all of the columns
 pd.set_option('display.max_columns', None)
 print(music_df)
+
+print(music_df.isnull().sum())
+
+data = music_df
+
 #Function to calculate the weighted popularity scores based on their release
 def calculate_weighted_popularity(release_date):
     # Convert the release date to datetime object
