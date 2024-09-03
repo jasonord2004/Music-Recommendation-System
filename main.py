@@ -100,14 +100,16 @@ else:
     exit()
 
 #Specific playlist's id from URL
-playlist_id = '1VnIZt1YcgjR1JJUqTPDS9'
+playlist_id = '304CSjOTfPwt1O70M5Muov'
 
 music_df = get_trending_playlist_data(playlist_id, access_token)
 
 #prints dataframe with all of the columns
 pd.set_option('display.max_columns', None)
+print(f"Dataframe of all the songs in the playlist:")
 print(music_df)
 
+#Missing audio features in songs
 print(music_df.isnull().sum())
 
 data = music_df
@@ -178,7 +180,8 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
 
     return hybrid_recommendations
 
-input_song_name = "みちしるべ"
-recommendations = hybrid_recommendations(input_song_name, num_recommendations=5)
+#Put the song you want recommendations based off of
+input_song_name = "Blossom"
+recommendations = hybrid_recommendations(input_song_name, num_recommendations=10)
 print(f"Hybrid recommended songs for '{input_song_name}':")
 print(recommendations)
