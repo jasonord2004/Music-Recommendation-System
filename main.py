@@ -76,44 +76,6 @@ def get_trending_playlist_data(playlist_id, access_token):
 
     return df
 
-#Retreived from personal Spotify Developer account
-CLIENT_ID =
-CLIENT_SECRET =
-
-client_credentials = f"{CLIENT_ID}:{CLIENT_SECRET}"
-client_credentials_base64 = base64.b64encode(client_credentials.encode())
-
-token_url = 'https://accounts.spotify.com/api/token'
-headers = {
-    'Authorization': f'Basic {client_credentials_base64.decode()}'
-}
-data = {
-    'grant_type': 'client_credentials'
-}
-response = requests.post(token_url, data=data, headers=headers)
-
-if response.status_code == 200:
-    access_token = response.json()['access_token']
-    print("Access token obtained successfully.")
-else:
-    print("error obtaining access token.")
-    exit()
-
-#Specific playlist's id from URL
-playlist_id = '304CSjOTfPwt1O70M5Muov'
-
-music_df = get_trending_playlist_data(playlist_id, access_token)
-
-#prints dataframe with all of the columns
-pd.set_option('display.max_columns', None)
-print(f"Dataframe of all the songs in the playlist:")
-print(music_df)
-
-#Missing audio features in songs
-print(music_df.isnull().sum())
-
-data = music_df
-
 #Function to calculate the weighted popularity scores based on their release
 def calculate_weighted_popularity(release_date):
     # Convert the release date to datetime object
@@ -125,13 +87,6 @@ def calculate_weighted_popularity(release_date):
     # Calculate the weighted popularity score based on time span (the more recent, the more weighted)
     weight = 1 / (time_span.days + 1)
     return weight
-
-
-# normalize the music features using the Min-Max scaling
-scaler = MinMaxScaler()
-music_features = music_df [['Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness',
-                            'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo']].values
-music_features_scaled = scaler.fit_transform(music_features)
 
 # Function for content-based recommendations based on music features
 def content_based_recommendations(input_song_name, num_recommendations = 5):
@@ -179,6 +134,49 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     hybrid_recommendations = hybrid_recommendations[hybrid_recommendations['Track Name'] != input_song_name]
 
     return hybrid_recommendations
+
+#Retreived from personal Spotify Developer account
+
+client_credentials = f"{CLIENT_ID}:{CLIENT_SECRET}"
+client_credentials_base64 = base64.b64encode(client_credentials.encode())
+
+token_url = 'https://accounts.spotify.com/api/token'
+headers = {
+    'Authorization': f'Basic {client_credentials_base64.decode()}'
+}
+data = {
+    'grant_type': 'client_credentials'
+}
+response = requests.post(token_url, data=data, headers=headers)
+
+if response.status_code == 200:
+    access_token = response.json()['access_token']
+    print("Access token obtained successfully.")
+else:
+    print("error obtaining access token.")
+    exit()
+
+#Specific playlist's id from URL
+playlist_id = '304CSjOTfPwt1O70M5Muov'
+
+music_df = get_trending_playlist_data(playlist_id, access_token)
+
+#prints dataframe with all of the columns
+pd.set_option('display.max_columns', None)
+print(f"Dataframe of all the songs in the playlist:")
+print(music_df)
+
+#Missing audio features in songs
+print(music_df.isnull().sum())
+
+data = music_df
+
+
+# normalize the music features using the Min-Max scaling
+scaler = MinMaxScaler()
+music_features = music_df [['Danceability', 'Energy', 'Key', 'Loudness', 'Mode', 'Speechiness',
+                            'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo']].values
+music_features_scaled = scaler.fit_transform(music_features)
 
 #Put the song you want recommendations based off of
 input_song_name = "Blossom"
